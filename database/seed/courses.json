@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "CS401",
+    "name": "Algorithms and Complexity",
+    "code": "CS401",
+    "program": "Computer Science",
+    "credits": 6,
+    "semester": "Spring 2026"
+  },
+  {
+    "_id": "CS301",
+    "name": "Database Systems",
+    "code": "CS301",
+    "program": "Computer Science",
+    "credits": 6,
+    "semester": "Spring 2026"
+  },
+  {
+    "_id": "BI201",
+    "name": "Business Intelligence",
+    "code": "BI201",
+    "program": "Business Informatics",
+    "credits": 4,
+    "semester": "Spring 2026"
+  }
+]
