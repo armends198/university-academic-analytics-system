@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "ENR-001",
+    "studentId": "STU-001",
+    "courseId": "CS401",
+    "semester": "Spring 2026",
+    "grade": 3.7,
+    "status": "passed"
+  },
+  {
+    "_id": "ENR-002",
+    "studentId": "STU-002",
+    "courseId": "CS401",
+    "semester": "Spring 2026",
+    "grade": 1.5,
+    "status": "failed"
+  },
+  {
+    "_id": "ENR-003",
+    "studentId": "STU-002",
+    "courseId": "CS301",
+    "semester": "Spring 2026",
+    "grade": 1.9,
+    "status": "failed"
+  },
+  {
+    "_id": "ENR-004",
+    "studentId": "STU-003",
+    "courseId": "BI201",
+    "semester": "Spring 2026",
+    "grade": 4.0,
+    "status": "passed"
+  },
+  {
+    "_id": "ENR-005",
+    "studentId": "STU-004",
+    "courseId": "CS401",
+    "semester": "Spring 2026",
+    "grade": 2.0,
+    "status": "failed"
+  },
+  {
+    "_id": "ENR-006",
+    "studentId": "STU-005",
+    "courseId": "CS301",
+    "semester": "Spring 2026",
+    "grade": 3.0,
+    "status": "passed"
+  }
+]

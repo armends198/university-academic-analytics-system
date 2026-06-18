@@ -1,0 +1,46 @@
+[
+  {
+    "_id": "SNAP-001",
+    "studentId": "STU-001",
+    "semester": "Spring 2026",
+    "gpa": 3.40,
+    "passedCourses": 5,
+    "failedCourses": 0,
+    "absenceRate": 0.05,
+    "riskScore": 0.08,
+    "riskLevel": "low"
+  },
+  {
+    "_id": "SNAP-002",
+    "studentId": "STU-002",
+    "semester": "Spring 2026",
+    "gpa": 1.80,
+    "passedCourses": 1,
+    "failedCourses": 2,
+    "absenceRate": 0.22,
+    "riskScore": 0.84,
+    "riskLevel": "high"
+  },
+  {
+    "_id": "SNAP-003",
+    "studentId": "STU-002",
+    "semester": "Fall 2025",
+    "gpa": 2.40,
+    "passedCourses": 3,
+    "failedCourses": 1,
+    "absenceRate": 0.14,
+    "riskScore": 0.51,
+    "riskLevel": "medium"
+  },
+  {
+    "_id": "SNAP-004",
+    "studentId": "STU-004",
+    "semester": "Spring 2026",
+    "gpa": 2.10,
+    "passedCourses": 2,
+    "failedCourses": 1,
+    "absenceRate": 0.17,
+    "riskScore": 0.62,
+    "riskLevel": "medium"
+  }
+]

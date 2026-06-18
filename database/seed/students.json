@@ -1,0 +1,67 @@
+[
+  {
+    "_id": "STU-001",
+    "firstName": "Elena",
+    "lastName": "Marku",
+    "email": "elena.marku@student.seeu.edu.mk",
+    "program": "Computer Science",
+    "enrollmentYear": 2022,
+    "status": "enrolled",
+    "gpa": 3.40,
+    "prevGpa": 3.55,
+    "absences": 4,
+    "totalClasses": 80
+  },
+  {
+    "_id": "STU-002",
+    "firstName": "Driton",
+    "lastName": "Gashi",
+    "email": "driton.gashi@student.seeu.edu.mk",
+    "program": "Computer Science",
+    "enrollmentYear": 2021,
+    "status": "enrolled",
+    "gpa": 1.80,
+    "prevGpa": 2.40,
+    "absences": 18,
+    "totalClasses": 80
+  },
+  {
+    "_id": "STU-003",
+    "firstName": "Sara",
+    "lastName": "Ibishi",
+    "email": "sara.ibishi@student.seeu.edu.mk",
+    "program": "Business Informatics",
+    "enrollmentYear": 2023,
+    "status": "enrolled",
+    "gpa": 3.80,
+    "prevGpa": 3.70,
+    "absences": 2,
+    "totalClasses": 80
+  },
+  {
+    "_id": "STU-004",
+    "firstName": "Alban",
+    "lastName": "Rexhepi",
+    "email": "alban.rexhepi@student.seeu.edu.mk",
+    "program": "Law",
+    "enrollmentYear": 2022,
+    "status": "enrolled",
+    "gpa": 2.10,
+    "prevGpa": 2.80,
+    "absences": 14,
+    "totalClasses": 80
+  },
+  {
+    "_id": "STU-005",
+    "firstName": "Mirlinda",
+    "lastName": "Hoxha",
+    "email": "mirlinda.hoxha@student.seeu.edu.mk",
+    "program": "Computer Science",
+    "enrollmentYear": 2023,
+    "status": "enrolled",
+    "gpa": 2.95,
+    "prevGpa": 3.10,
+    "absences": 8,
+    "totalClasses": 80
+  }
+]

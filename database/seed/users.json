@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "USR-001",
+    "firstName": "Admin",
+    "email": "admin@seeu.edu.mk",
+    "passwordHash": "hashed_password_here",
+    "role": "Administrator"
+  },
+  {
+    "_id": "USR-002",
+    "firstName": "Besim",
+    "email": "besim.hoti@seeu.edu.mk",
+    "passwordHash": "hashed_password_here",
+    "role": "Faculty"
+  }
+]
