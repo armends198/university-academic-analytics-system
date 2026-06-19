@@ -1,6 +1,7 @@
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using AcademicAnalytics.Api.Settings;
+using AcademicAnalytics.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,7 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
     var settings = sp.GetRequiredService<IOptions<MongoSettings>>().Value;
     return new MongoClient(settings.ConnectionString);
 });
-
+builder.Services.AddSingleton<MongoDbContext>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
