@@ -23,6 +23,7 @@ builder.Services.Configure<JwtSettings>(
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<AnalyticsService>();
 
 var app = builder.Build();
 
@@ -88,6 +89,11 @@ app.MapGet("/students/at-risk", async (StudentService studentService) =>
 {
     var results = await studentService.GetAtRiskAsync();
     return Results.Ok(results);
+});
+app.MapGet("/analytics/dashboard", async (AnalyticsService analyticsService) =>
+{
+    var result = await analyticsService.GetDashboardAsync();
+    return Results.Ok(result);
 });
 
 var summaries = new[]
