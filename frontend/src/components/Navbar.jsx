@@ -7,6 +7,7 @@ function Navbar() {
       <Link to="/students" className="text-gray-600 hover:text-blue-600">Students</Link>
       <Link to="/at-risk" className="text-gray-600 hover:text-blue-600">At-Risk</Link>
       <Link to="/student-search" className="text-gray-600 hover:text-blue-600">Student Search</Link>
+      <Link to="/semester-comparison" className="text-gray-600 hover:text-blue-600">Semester Comparison</Link>
       <Link to="/courses" className="text-gray-600 hover:text-blue-600">Courses</Link>
       <Link to="/enrollments" className="text-gray-600 hover:text-blue-600">Enrollments</Link>
     </nav>

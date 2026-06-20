@@ -6,6 +6,7 @@ import StudentsPage from './pages/StudentsPage'
 import AtRiskStudentsPage from './pages/AtRiskStudentsPage'
 import StudentSearchPage from './pages/StudentSearchPage'
 import StudentDetailPage from './pages/StudentDetailPage'
+import SemesterComparisonPage from './pages/SemesterComparisonPage'
 import CoursesPage from './pages/CoursesPage'
 import EnrollmentsPage from './pages/EnrollmentsPage'
 import AnalyticsPage from './pages/AnalyticsPage'
@@ -31,6 +32,7 @@ function App() {
       <Route path="/at-risk" element={<AppLayout><AtRiskStudentsPage /></AppLayout>} />
       <Route path="/student-search" element={<AppLayout><StudentSearchPage /></AppLayout>} />
       <Route path="/students/:id" element={<AppLayout><StudentDetailPage /></AppLayout>} />
+      <Route path="/semester-comparison" element={<AppLayout><SemesterComparisonPage /></AppLayout>} />
       <Route path="/courses" element={<AppLayout><CoursesPage /></AppLayout>} />
       <Route path="/enrollments" element={<AppLayout><EnrollmentsPage /></AppLayout>} />
     </Routes>
