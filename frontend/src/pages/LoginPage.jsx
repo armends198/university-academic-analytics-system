@@ -90,20 +90,36 @@ export default function LoginPage() {
           {/* Stats */}
           <div className="mt-12 grid grid-cols-2 gap-4 w-full max-w-xs">
             <div className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">2,400+</div>
-              <div className="text-purple-200 text-xs mt-1 font-medium uppercase tracking-wide">Studentë Aktivë</div>
+              <div className="mb-1">
+                <svg className="w-7 h-7 mx-auto text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87m6-4.13a4 4 0 11-8 0 4 4 0 018 0zm6-4a4 4 0 11-4-4 4 4 0 014 4z" />
+                </svg>
+              </div>
+              <div className="text-purple-200 text-xs mt-1 font-medium uppercase tracking-wide">Menaxhim Studentësh</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">150+</div>
-              <div className="text-purple-200 text-xs mt-1 font-medium uppercase tracking-wide">Staf Akademik</div>
+              <div className="mb-1">
+                <svg className="w-7 h-7 mx-auto text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4.418 0-8 1.79-8 4v1h16v-1c0-2.21-3.582-4-8-4z" />
+                </svg>
+              </div>
+              <div className="text-purple-200 text-xs mt-1 font-medium uppercase tracking-wide">Stafi Ynë</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">40+</div>
-              <div className="text-purple-200 text-xs mt-1 font-medium uppercase tracking-wide">Programe</div>
+              <div className="mb-1">
+                <svg className="w-7 h-7 mx-auto text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <div className="text-purple-200 text-xs mt-1 font-medium uppercase tracking-wide">Programe Akademike</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">98%</div>
-              <div className="text-purple-200 text-xs mt-1 font-medium uppercase tracking-wide">Disponueshmëri</div>
+              <div className="mb-1">
+                <svg className="w-7 h-7 mx-auto text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="text-purple-200 text-xs mt-1 font-medium uppercase tracking-wide">Performancë e Lartë</div>
             </div>
           </div>
         </div>
