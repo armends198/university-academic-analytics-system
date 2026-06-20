@@ -3,6 +3,9 @@ using Microsoft.Extensions.Options;
 using AcademicAnalytics.Api.Settings;
 using AcademicAnalytics.Api.Services;
 using AcademicAnalytics.Api.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +23,26 @@ builder.Services.AddSingleton<MongoDbContext>();
 
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
+var jwtSecretKey = builder.Configuration["JwtSettings:SecretKey"]!;
+var jwtIssuer = builder.Configuration["JwtSettings:Issuer"]!;
+var jwtAudience = builder.Configuration["JwtSettings:Audience"]!;
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtIssuer,
+            ValidateAudience = true,
+            ValidAudience = jwtAudience,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey))
+        };
+    });
+
+builder.Services.AddAuthorization();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<AnalyticsService>();
@@ -31,7 +53,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.MapGet("/api/ping", async (IMongoClient mongoClient) =>
@@ -72,7 +95,8 @@ app.MapGet("/students/search", async (StudentService studentService, string? nam
 
     var results = await studentService.SearchAsync(query);
     return Results.Ok(results);
-});
+})
+.RequireAuthorization(policy => policy.RequireRole("Administrator"));
 
 app.MapGet("/students/{id}/history", async (string id, StudentService studentService) =>
 {
@@ -89,7 +113,8 @@ app.MapGet("/students/at-risk", async (StudentService studentService) =>
 {
     var results = await studentService.GetAtRiskAsync();
     return Results.Ok(results);
-});
+})
+.RequireAuthorization();
 app.MapGet("/analytics/dashboard", async (AnalyticsService analyticsService) =>
 {
     var result = await analyticsService.GetDashboardAsync();
@@ -99,7 +124,8 @@ app.MapGet("/analytics/comparison", async (AnalyticsService analyticsService, st
 {
     var result = await analyticsService.GetComparisonAsync(semesterA, semesterB);
     return Results.Ok(result);
-});
+})
+.RequireAuthorization(policy => policy.RequireRole("Administrator"));
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
