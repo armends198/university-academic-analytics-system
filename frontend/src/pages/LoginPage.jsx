@@ -1,10 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const MOCK_USERS = {
-  admin: { password: 'admin', role: 'Administrator', redirect: '/dashboard' },
-  faculty: { password: 'faculty', role: 'Faculty', redirect: '/students' },
-}
+import api from '../services/api'
 
 function isValidEmailFormat(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
@@ -20,7 +16,7 @@ export default function LoginPage() {
     const errs = {}
     if (!form.email.trim()) {
       errs.email = 'Ky fushë është e detyrueshme.'
-    } else if (form.email.includes('@') && !isValidEmailFormat(form.email)) {
+    } else if (!isValidEmailFormat(form.email)) {
       errs.email = 'Formati i email-it është i pasaktë.'
     }
     if (!form.password.trim()) {
@@ -35,7 +31,7 @@ export default function LoginPage() {
     setErrors(prev => ({ ...prev, [name]: undefined, auth: undefined }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length > 0) {
@@ -44,18 +40,24 @@ export default function LoginPage() {
     }
 
     setLoading(true)
-    setTimeout(() => {
-      const key = form.email.trim().toLowerCase()
-      const user = MOCK_USERS[key]
-      if (user && user.password === form.password) {
-        localStorage.setItem('role', user.role)
-        localStorage.setItem('user', key)
-        navigate(user.redirect)
-      } else {
-        setErrors({ auth: 'Kredencialet janë të gabuara. Provoni përsëri.' })
-        setLoading(false)
-      }
-    }, 400)
+    try {
+      const { data } = await api.post('/auth/login', {
+        email: form.email.trim(),
+        password: form.password,
+      })
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('role', data.role)
+      localStorage.setItem('firstName', data.firstName)
+      navigate(data.role === 'Administrator' ? '/dashboard' : '/at-risk')
+    } catch (err) {
+      const status = err.response?.status
+      setErrors({
+        auth: status === 401
+          ? 'Email ose password gabim.'
+          : 'Gabim gjatë kyçjes. Provoni përsëri.',
+      })
+      setLoading(false)
+    }
   }
 
   return (
@@ -154,7 +156,7 @@ export default function LoginPage() {
                 autoComplete="username"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="admin ose faculty"
+                placeholder="email@seeu.edu.mk"
                 className={[
                   'w-full px-3.5 py-2.5 rounded-lg border text-sm text-gray-900 placeholder-gray-400',
                   'focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-shadow',
@@ -227,13 +229,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Hint */}
-          <div className="mt-6 p-3 bg-gray-50 rounded-lg border border-gray-200 text-xs text-gray-500">
-            <p className="font-medium text-gray-600 mb-1">Kredenciale demo:</p>
-            <p><span className="font-mono text-violet-700">admin / admin</span> → Administrator</p>
-            <p><span className="font-mono text-violet-700">faculty / faculty</span> → Faculty</p>
-          </div>
 
           <p className="mt-8 text-center text-xs text-gray-400">
             © {new Date().getFullYear()} Sistemi Akademik · v1.0
