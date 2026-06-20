@@ -9,6 +9,7 @@ Built as a Software Engineering course project, developed using Agile/Scrum prac
 ## Tech Stack
 
 **Frontend**
+
 - React (Vite)
 - Tailwind CSS
 - React Router
@@ -16,12 +17,14 @@ Built as a Software Engineering course project, developed using Agile/Scrum prac
 - Recharts
 
 **Backend**
+
 - ASP.NET Core Web API (.NET 10)
 - JWT Authentication
 - Role-Based Authorization (Administrator / Faculty)
 - BCrypt password hashing
 
 **Database**
+
 - MongoDB Atlas
 - Seeded with realistic academic data via a Python (`pymongo`) seed script
 
@@ -109,10 +112,28 @@ curl http://localhost:5272/api/ping
 
 From the `database/` folder:
 
+- PowerShell:
+
+```powershell
+$env:MONGO_URI = "<your-mongodb-atlas-connection-string>"
+python3 seed.py
+```
+
+- Command Prompt:
+
+```cmd
+set MONGO_URI=<your-mongodb-atlas-connection-string>
+python3 seed.py
+```
+
+- Bash / WSL:
+
 ```bash
 export MONGO_URI="<your-mongodb-atlas-connection-string>"
 python3 seed.py
 ```
+
+Use your MongoDB Atlas connection string, preferably the `mongodb+srv://...` URI from Atlas. The script will use TLS automatically for Atlas hosts.
 
 This populates 5 collections: `users`, `students`, `courses`, `enrollments`, `performance_snapshots`.
 
@@ -130,15 +151,15 @@ npm run dev
 
 All endpoints are served from `http://localhost:5272`. Fields are camelCase; IDs are plain strings (e.g. `"STU-001"`).
 
-| Method | Endpoint | Auth Required | Description |
-|---|---|---|---|
-| `GET` | `/api/ping` | No | Health check — confirms MongoDB connectivity |
-| `POST` | `/auth/login` | No | Authenticates a user, returns a JWT |
-| `GET` | `/students/search` | Administrator | Search/filter students by name, program, GPA range |
-| `GET` | `/students/{id}/history` | Any authenticated user | Per-semester GPA and risk history for one student |
-| `GET` | `/students/at-risk` | Any authenticated user | Students currently at medium/high risk |
-| `GET` | `/analytics/dashboard` | Any authenticated user | Institution-wide KPIs (avg GPA, pass rate, at-risk count, dropout rate) |
-| `GET` | `/analytics/comparison` | Administrator | Compares average GPA and pass rate between two semesters |
+| Method | Endpoint                 | Auth Required          | Description                                                             |
+| ------ | ------------------------ | ---------------------- | ----------------------------------------------------------------------- |
+| `GET`  | `/api/ping`              | No                     | Health check — confirms MongoDB connectivity                            |
+| `POST` | `/auth/login`            | No                     | Authenticates a user, returns a JWT                                     |
+| `GET`  | `/students/search`       | Administrator          | Search/filter students by name, program, GPA range                      |
+| `GET`  | `/students/{id}/history` | Any authenticated user | Per-semester GPA and risk history for one student                       |
+| `GET`  | `/students/at-risk`      | Any authenticated user | Students currently at medium/high risk                                  |
+| `GET`  | `/analytics/dashboard`   | Any authenticated user | Institution-wide KPIs (avg GPA, pass rate, at-risk count, dropout rate) |
+| `GET`  | `/analytics/comparison`  | Administrator          | Compares average GPA and pass rate between two semesters                |
 
 For full request/response examples, see [`docs/BACKEND_HANDOFF.md`](docs/BACKEND_HANDOFF.md).
 
@@ -166,11 +187,11 @@ No direct commits to `main`. Every feature has a corresponding closed Issue and 
 
 ## Team
 
-| Name | Role | Responsibilities |
-|---|---|---|
+| Name             | Role                        | Responsibilities                                                           |
+| ---------------- | --------------------------- | -------------------------------------------------------------------------- |
 | Armend Sejfullai | Backend Lead / Scrum Master | ASP.NET Core API, MongoDB integration, authentication, sprint coordination |
-| Besnik | Frontend Lead | React application, UI/UX, dashboard visualizations |
-| Arian | Full Stack / QA | Data seeding, integration, testing, deployment |
+| Besnik           | Frontend Lead               | React application, UI/UX, dashboard visualizations                         |
+| Arian            | Full Stack / QA             | Data seeding, integration, testing, deployment                             |
 
 ---
 
