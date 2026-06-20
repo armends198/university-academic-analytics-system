@@ -46,5 +46,39 @@ namespace AcademicAnalytics.Api.Services
                 DropoutRate = Math.Round(dropoutRate, 2)
             };
         }
+        public async Task<ComparisonResponse> GetComparisonAsync(string semesterA, string semesterB)
+{
+    return new ComparisonResponse
+    {
+        SemesterA = await GetSemesterStatsAsync(semesterA),
+        SemesterB = await GetSemesterStatsAsync(semesterB)
+    };
+}
+
+private async Task<SemesterStats> GetSemesterStatsAsync(string semester)
+{
+    var snapshots = await _db.PerformanceSnapshots
+        .Find(s => s.Semester == semester)
+        .ToListAsync();
+
+    var enrollments = await _db.Enrollments
+        .Find(e => e.Semester == semester)
+        .ToListAsync();
+
+    double averageGpa = snapshots.Count > 0
+        ? snapshots.Average(s => s.Gpa)
+        : 0;
+
+    double passRate = enrollments.Count > 0
+    ? (double)enrollments.Count(e => e.Status == "passed") / enrollments.Count * 100
+    : 0;
+
+    return new SemesterStats
+    {
+        Semester = semester,
+        AverageGpa = Math.Round(averageGpa, 2),
+        PassRate = Math.Round(passRate, 2)
+    };
+}
     }
 }

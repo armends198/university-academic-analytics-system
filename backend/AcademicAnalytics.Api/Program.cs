@@ -95,7 +95,11 @@ app.MapGet("/analytics/dashboard", async (AnalyticsService analyticsService) =>
     var result = await analyticsService.GetDashboardAsync();
     return Results.Ok(result);
 });
-
+app.MapGet("/analytics/comparison", async (AnalyticsService analyticsService, string semesterA, string semesterB) =>
+{
+    var result = await analyticsService.GetComparisonAsync(semesterA, semesterB);
+    return Results.Ok(result);
+});
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
