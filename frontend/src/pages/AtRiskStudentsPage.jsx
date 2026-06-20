@@ -1,8 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { atRiskStudents } from '../data/students'
-
-const studentData = atRiskStudents
+import api from '../services/api'
 
 function getBadgeClasses(level) {
   if (level === 'High') return 'bg-red-100 text-red-700'
@@ -10,13 +8,43 @@ function getBadgeClasses(level) {
   return 'bg-emerald-100 text-emerald-700'
 }
 
+function capitalize(str) {
+  if (!str) return str
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
+
 export default function AtRiskStudentsPage() {
+  const [students, setStudents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [riskFilter, setRiskFilter] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortDirection, setSortDirection] = useState('desc')
 
+  useEffect(() => {
+    api
+      .get('/students/at-risk')
+      .then((res) => {
+        const mapped = res.data.map((s) => ({
+          id: s.id,
+          name: `${s.firstName} ${s.lastName}`,
+          program: s.program,
+          gpa: s.currentGpa,
+          riskScore: s.riskScore,
+          riskLevel: capitalize(s.riskLevel),
+        }))
+        setStudents(mapped)
+      })
+      .catch(() => {
+        setError('Nuk u mundësua ngarkimi i studentëve. Provo përsëri.')
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [])
+
   const filteredStudents = useMemo(() => {
-    return studentData
+    return students
       .filter((student) => {
         const matchesFilter = riskFilter === 'All' || student.riskLevel === riskFilter
         const normalizedSearch = searchQuery.trim().toLowerCase()
@@ -30,7 +58,7 @@ export default function AtRiskStudentsPage() {
         const delta = a.riskScore - b.riskScore
         return sortDirection === 'asc' ? delta : -delta
       })
-  }, [riskFilter, searchQuery, sortDirection])
+  }, [students, riskFilter, searchQuery, sortDirection])
 
   const sortArrow = sortDirection === 'asc' ? '▲' : '▼'
 
@@ -82,41 +110,59 @@ export default function AtRiskStudentsPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-left text-sm text-slate-700">
-            <thead className="border-b border-gray-200 bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
-              <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Program</th>
-                <th className="px-4 py-3">GPA</th>
-                <th
-                  className="px-4 py-3 cursor-pointer select-none"
-                  onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-                >
-                  Risk Score <span className="font-semibold text-slate-900">{sortArrow}</span>
-                </th>
-                <th className="px-4 py-3">Risk Level</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredStudents.map((student) => (
-                <tr key={student.id} className="border-b border-gray-100 hover:bg-slate-50">
-                  <td className="px-4 py-4 font-medium text-slate-900">
-                    <Link to={`/students/${student.id}`} state={{ from: '/at-risk' }} className="text-slate-900 hover:text-violet-600">{student.name}</Link>
-                  </td>
-                  <td className="px-4 py-4">{student.program}</td>
-                  <td className="px-4 py-4">{student.gpa.toFixed(2)}</td>
-                  <td className="px-4 py-4">{student.riskScore.toFixed(1)}</td>
-                  <td className="px-4 py-4">
-                    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${getBadgeClasses(student.riskLevel)}`}>
-                      {student.riskLevel}
-                    </span>
-                  </td>
+        {loading && (
+          <p className="py-10 text-center text-sm text-slate-500">Duke ngarkuar...</p>
+        )}
+
+        {error && (
+          <p className="py-10 text-center text-sm text-red-600">{error}</p>
+        )}
+
+        {!loading && !error && (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-sm text-slate-700">
+              <thead className="border-b border-gray-200 bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+                <tr>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Program</th>
+                  <th className="px-4 py-3">GPA</th>
+                  <th
+                    className="px-4 py-3 cursor-pointer select-none"
+                    onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
+                  >
+                    Risk Score <span className="font-semibold text-slate-900">{sortArrow}</span>
+                  </th>
+                  <th className="px-4 py-3">Risk Level</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filteredStudents.map((student) => (
+                  <tr key={student.id} className="border-b border-gray-100 hover:bg-slate-50">
+                    <td className="px-4 py-4 font-medium text-slate-900">
+                      <Link
+                        to={`/students/${student.id}`}
+                        state={{ from: '/at-risk' }}
+                        className="text-slate-900 hover:text-violet-600"
+                      >
+                        {student.name}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-4">{student.program}</td>
+                    <td className="px-4 py-4">{student.gpa.toFixed(2)}</td>
+                    <td className="px-4 py-4">{student.riskScore.toFixed(1)}</td>
+                    <td className="px-4 py-4">
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${getBadgeClasses(student.riskLevel)}`}
+                      >
+                        {student.riskLevel}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )
