@@ -83,5 +83,45 @@ namespace AcademicAnalytics.Api.Services
                 }).ToList()
             };
         }
+        public async Task<List<AtRiskStudentResponse>> GetAtRiskAsync()
+{
+    var allSnapshots = await _db.PerformanceSnapshots
+        .Find(_ => true)
+        .ToListAsync();
+
+    var latestSnapshotPerStudent = allSnapshots
+        .GroupBy(s => s.StudentId)
+        .Select(g => g.OrderByDescending(s => s.Semester).First())
+        .Where(s => s.RiskLevel == "medium" || s.RiskLevel == "high")
+        .ToList();
+
+    var result = new List<AtRiskStudentResponse>();
+
+    foreach (var snapshot in latestSnapshotPerStudent)
+    {
+        var student = await _db.Students
+            .Find(s => s.Id == snapshot.StudentId)
+            .FirstOrDefaultAsync();
+
+        if (student is null)
+        {
+            continue;
+        }
+
+        result.Add(new AtRiskStudentResponse
+        {
+            Id = student.Id,
+            FirstName = student.FirstName,
+            LastName = student.LastName,
+            Program = student.Program,
+            CurrentGpa = student.Gpa,
+            RiskScore = snapshot.RiskScore,
+            RiskLevel = snapshot.RiskLevel,
+            Semester = snapshot.Semester
+        });
+    }
+
+    return result.OrderByDescending(r => r.RiskScore).ToList();
+}
     }
 }
