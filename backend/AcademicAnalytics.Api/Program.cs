@@ -84,6 +84,11 @@ app.MapGet("/students/{id}/history", async (string id, StudentService studentSer
 
     return Results.Ok(result);
 });
+app.MapGet("/students/at-risk", async (StudentService studentService) =>
+{
+    var results = await studentService.GetAtRiskAsync();
+    return Results.Ok(results);
+});
 
 var summaries = new[]
 {
