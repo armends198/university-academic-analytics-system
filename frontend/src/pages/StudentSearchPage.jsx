@@ -1,27 +1,8 @@
+import { Link } from 'react-router-dom'
 import { useMemo, useState } from 'react'
+import { studentSearchData } from '../data/students'
 
-const studentData = [
-  { id: 1, name: 'Elira Domi', program: 'Computer Science', semester: 'Fall 2024', gpa: 3.48, riskLevel: 'Low' },
-  { id: 2, name: 'Kastriot Beqiri', program: 'Business Administration', semester: 'Spring 2025', gpa: 2.94, riskLevel: 'Medium' },
-  { id: 3, name: 'Arta Krasniqi', program: 'Law', semester: 'Fall 2024', gpa: 3.12, riskLevel: 'Low' },
-  { id: 4, name: 'Flamur Hysa', program: 'Data Analytics', semester: 'Spring 2025', gpa: 2.28, riskLevel: 'Medium' },
-  { id: 5, name: 'Mira Shala', program: 'Cybersecurity', semester: 'Fall 2023', gpa: 1.88, riskLevel: 'High' },
-  { id: 6, name: 'Donika Leka', program: 'Information Systems', semester: 'Spring 2024', gpa: 3.24, riskLevel: 'Low' },
-  { id: 7, name: 'Edi Miftari', program: 'Software Engineering', semester: 'Fall 2024', gpa: 2.67, riskLevel: 'Medium' },
-  { id: 8, name: 'Gresa Shatri', program: 'Economics', semester: 'Spring 2025', gpa: 2.11, riskLevel: 'Medium' },
-  { id: 9, name: 'Albana Dervishi', program: 'Public Health', semester: 'Fall 2023', gpa: 1.74, riskLevel: 'High' },
-  { id: 10, name: 'Blerim Zeneli', program: 'Computer Science', semester: 'Spring 2024', gpa: 3.37, riskLevel: 'Low' },
-  { id: 11, name: 'Sara Kelmendi', program: 'Law', semester: 'Fall 2024', gpa: 2.56, riskLevel: 'Medium' },
-  { id: 12, name: 'Drin Mula', program: 'Cybersecurity', semester: 'Spring 2025', gpa: 1.98, riskLevel: 'High' },
-  { id: 13, name: 'Linda Berisha', program: 'Data Analytics', semester: 'Fall 2023', gpa: 2.87, riskLevel: 'Medium' },
-  { id: 14, name: 'Arian Rexhepi', program: 'Business Administration', semester: 'Spring 2024', gpa: 3.05, riskLevel: 'Low' },
-  { id: 15, name: 'Teuta Islami', program: 'Information Systems', semester: 'Fall 2024', gpa: 2.39, riskLevel: 'Medium' },
-  { id: 16, name: 'Valon Meta', program: 'Software Engineering', semester: 'Spring 2025', gpa: 3.21, riskLevel: 'Low' },
-  { id: 17, name: 'Enis Avdiu', program: 'Economics', semester: 'Fall 2023', gpa: 1.66, riskLevel: 'High' },
-  { id: 18, name: 'Miriam Gashi', program: 'Public Health', semester: 'Spring 2024', gpa: 2.71, riskLevel: 'Medium' },
-  { id: 19, name: 'Ariela Selmani', program: 'Computer Science', semester: 'Fall 2024', gpa: 3.42, riskLevel: 'Low' },
-  { id: 20, name: 'Besart Hoxhaj', program: 'Law', semester: 'Spring 2025', gpa: 2.03, riskLevel: 'Medium' },
-]
+const studentData = studentSearchData
 
 const programOptions = [
   'All',
@@ -199,7 +180,9 @@ export default function StudentSearchPage() {
             <tbody>
               {visibleStudents.map((student) => (
                 <tr key={student.id} className="border-b border-gray-100 hover:bg-slate-50">
-                  <td className="px-4 py-4 font-medium text-slate-900">{student.name}</td>
+                  <td className="px-4 py-4 font-medium text-slate-900">
+                    <Link to={`/students/${student.id}`} state={{ from: '/student-search' }} className="text-slate-900 hover:text-violet-600">{student.name}</Link>
+                  </td>
                   <td className="px-4 py-4">{student.program}</td>
                   <td className="px-4 py-4">{student.semester}</td>
                   <td className="px-4 py-4">{student.gpa.toFixed(2)}</td>

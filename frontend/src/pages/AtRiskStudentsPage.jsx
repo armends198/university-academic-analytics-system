@@ -1,16 +1,8 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { atRiskStudents } from '../data/students'
 
-const studentData = [
-  { id: 1, name: 'Elena Krasniqi', program: 'Computer Science', gpa: 1.86, riskScore: 92.4, riskLevel: 'High' },
-  { id: 2, name: 'Driton Hoxha', program: 'Data Analytics', gpa: 2.14, riskScore: 74.3, riskLevel: 'Medium' },
-  { id: 3, name: 'Arta Berisha', program: 'Business Administration', gpa: 3.02, riskScore: 42.1, riskLevel: 'Low' },
-  { id: 4, name: 'Lorena Gashi', program: 'Cybersecurity', gpa: 1.94, riskScore: 88.5, riskLevel: 'High' },
-  { id: 5, name: 'Ilir Muhaxheri', program: 'Mechanical Engineering', gpa: 2.48, riskScore: 66.9, riskLevel: 'Medium' },
-  { id: 6, name: 'Arben Selmani', program: 'Economics', gpa: 2.75, riskScore: 54.2, riskLevel: 'Medium' },
-  { id: 7, name: 'Blerina Leka', program: 'Information Systems', gpa: 3.32, riskScore: 24.7, riskLevel: 'Low' },
-  { id: 8, name: 'Faton Krasniqi', program: 'Software Engineering', gpa: 3.08, riskScore: 39.5, riskLevel: 'Low' },
-  { id: 9, name: 'Mira Berisha', program: 'Public Health', gpa: 1.72, riskScore: 95.1, riskLevel: 'High' },
-]
+const studentData = atRiskStudents
 
 function getBadgeClasses(level) {
   if (level === 'High') return 'bg-red-100 text-red-700'
@@ -109,7 +101,9 @@ export default function AtRiskStudentsPage() {
             <tbody>
               {filteredStudents.map((student) => (
                 <tr key={student.id} className="border-b border-gray-100 hover:bg-slate-50">
-                  <td className="px-4 py-4 font-medium text-slate-900">{student.name}</td>
+                  <td className="px-4 py-4 font-medium text-slate-900">
+                    <Link to={`/students/${student.id}`} state={{ from: '/at-risk' }} className="text-slate-900 hover:text-violet-600">{student.name}</Link>
+                  </td>
                   <td className="px-4 py-4">{student.program}</td>
                   <td className="px-4 py-4">{student.gpa.toFixed(2)}</td>
                   <td className="px-4 py-4">{student.riskScore.toFixed(1)}</td>
