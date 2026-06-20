@@ -2,6 +2,7 @@ using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using AcademicAnalytics.Api.Settings;
 using AcademicAnalytics.Api.Services;
+using AcademicAnalytics.Api.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,11 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
     return new MongoClient(settings.ConnectionString);
 });
 builder.Services.AddSingleton<MongoDbContext>();
+
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("JwtSettings"));
+
+builder.Services.AddScoped<AuthService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +46,17 @@ app.MapGet("/api/ping", async (IMongoClient mongoClient) =>
     {
         return Results.Json(new { connected = false, error = ex.Message }, statusCode: 500);
     }
+});
+app.MapPost("/auth/login", async (LoginRequest request, AuthService authService) =>
+{
+    var result = await authService.LoginAsync(request);
+
+    if (result is null)
+    {
+        return Results.Unauthorized();
+    }
+
+    return Results.Ok(result);
 });
 
 var summaries = new[]
