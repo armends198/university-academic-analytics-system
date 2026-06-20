@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using AcademicAnalytics.Api.Settings;
 using AcademicAnalytics.Api.Services;
 using AcademicAnalytics.Api.DTOs;
+using AcademicAnalytics.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
 
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<StudentService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -58,7 +60,19 @@ app.MapPost("/auth/login", async (LoginRequest request, AuthService authService)
 
     return Results.Ok(result);
 });
+app.MapGet("/students/search", async (StudentService studentService, string? name, string? program, double? minGpa, double? maxGpa) =>
+{
+    var query = new StudentSearchQuery
+    {
+        Name = name,
+        Program = program,
+        MinGpa = minGpa,
+        MaxGpa = maxGpa
+    };
 
+    var results = await studentService.SearchAsync(query);
+    return Results.Ok(results);
+});
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
