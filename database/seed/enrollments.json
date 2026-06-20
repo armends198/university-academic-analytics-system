@@ -46,5 +46,45 @@
     "semester": "Spring 2026",
     "grade": 3.0,
     "status": "passed"
+  },
+  {
+    "_id": "ENR-007",
+    "studentId": "STU-001",
+    "courseId": "CS301",
+    "semester": "Fall 2025",
+    "grade": 3.5,
+    "status": "passed"
+  },
+  {
+    "_id": "ENR-008",
+    "studentId": "STU-002",
+    "courseId": "CS401",
+    "semester": "Fall 2025",
+    "grade": 2.2,
+    "status": "passed"
+  },
+  {
+    "_id": "ENR-009",
+    "studentId": "STU-002",
+    "courseId": "CS301",
+    "semester": "Fall 2025",
+    "grade": 1.8,
+    "status": "failed"
+  },
+  {
+    "_id": "ENR-010",
+    "studentId": "STU-002",
+    "courseId": "BI201",
+    "semester": "Fall 2025",
+    "grade": 2.6,
+    "status": "passed"
+  },
+  {
+    "_id": "ENR-011",
+    "studentId": "STU-005",
+    "courseId": "CS301",
+    "semester": "Fall 2025",
+    "grade": 3.0,
+    "status": "passed"
   }
 ]

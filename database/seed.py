@@ -1,6 +1,12 @@
 from pymongo import MongoClient
 import json
 import os
+import bcrypt
+
+DEFAULT_PASSWORD = "Password123!"
+
+def hash_password(plain: str) -> str:
+    return bcrypt.hashpw(plain.encode(), bcrypt.gensalt()).decode()
 
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017")
 DB_NAME   = "academic_analytics"
@@ -21,6 +27,11 @@ for col_name, file_path in collections:
         data = json.load(f)
     col = db[col_name]
     col.delete_many({})
+
+    for user in data:
+        if col_name == "users" and user.get("passwordHash") == "hashed_password_here":
+            user["passwordHash"] = hash_password(DEFAULT_PASSWORD)
+
     col.insert_many(data)
     print(f"Seeded {len(data)} documents into '{col_name}'")
 
