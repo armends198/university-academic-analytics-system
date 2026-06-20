@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import {
   LineChart,
@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts'
-import { allStudents } from '../data/students'
+import api from '../services/api'
 
 function badgeClasses(level) {
   if (level === 'High') return 'bg-red-100 text-red-700'
@@ -17,35 +17,54 @@ function badgeClasses(level) {
   return 'bg-emerald-100 text-emerald-700'
 }
 
-function buildHistory(student) {
-  const semesters = ['Fall 2022', 'Spring 2023', 'Fall 2023', 'Spring 2024', 'Fall 2024', 'Spring 2025']
-  const base = student.gpa
-  const drift = (student.id % 3) - 1
-
-  return semesters.map((semester, index) => {
-    const offset = index - 2.5
-    const value = Math.min(4, Math.max(1.5, base + offset * 0.08 + drift * 0.05))
-    const gpa = Number(value.toFixed(2))
-    const riskLevel = gpa < 2.0 ? 'High' : gpa < 2.7 ? 'Medium' : 'Low'
-
-    return { semester, gpa, riskLevel }
-  })
+function capitalize(str) {
+  if (!str) return str
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
 export default function StudentDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const student = allStudents.find((student) => String(student.id) === id)
-  const history = useMemo(() => (student ? buildHistory(student) : []), [student])
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
+  const [error, setError] = useState(false)
 
   const backPath = location.state?.from || '/student-search'
 
-  if (!student) {
+  useEffect(() => {
+    setLoading(true)
+    setNotFound(false)
+    setError(false)
+    setData(null)
+
+    api
+      .get(`/students/${id}/history`)
+      .then((res) => setData(res.data))
+      .catch((err) => {
+        if (err.response?.status === 404) {
+          setNotFound(true)
+        } else {
+          setError(true)
+        }
+      })
+      .finally(() => setLoading(false))
+  }, [id])
+
+  if (loading) {
     return (
       <div className="rounded-3xl border border-gray-200 bg-white p-10 text-center shadow-sm">
-        <h1 className="text-2xl font-semibold text-gray-900">Student not found</h1>
-        <p className="mt-3 text-sm text-gray-500">The requested student ID does not exist in the mock dataset.</p>
+        <p className="text-sm text-slate-500">Duke ngarkuar...</p>
+      </div>
+    )
+  }
+
+  if (notFound) {
+    return (
+      <div className="rounded-3xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+        <h1 className="text-2xl font-semibold text-gray-900">Studenti nuk u gjet</h1>
+        <p className="mt-3 text-sm text-gray-500">ID-ja e kërkuar nuk ekziston.</p>
         <button
           type="button"
           onClick={() => navigate(backPath)}
@@ -57,12 +76,37 @@ export default function StudentDetailPage() {
     )
   }
 
+  if (error) {
+    return (
+      <div className="rounded-3xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+        <h1 className="text-2xl font-semibold text-gray-900">Gabim</h1>
+        <p className="mt-3 text-sm text-red-600">Nuk u mundësua ngarkimi i të dhënave. Provo përsëri.</p>
+        <button
+          type="button"
+          onClick={() => navigate(backPath)}
+          className="mt-6 inline-flex rounded-full bg-violet-600 px-5 py-2 text-sm font-medium text-white hover:bg-violet-700"
+        >
+          Kthehu
+        </button>
+      </div>
+    )
+  }
+
+  const name = `${data.firstName} ${data.lastName}`
+  const history = data.history.map((h) => ({
+    ...h,
+    riskLevel: capitalize(h.riskLevel),
+  }))
+  const latest = history[history.length - 1]
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{student.name}</h1>
-          <p className="mt-2 text-sm text-gray-500">{student.program} | Semester: {student.semester}</p>
+          <h1 className="text-3xl font-bold text-gray-900">{name}</h1>
+          <p className="mt-2 text-sm text-gray-500">
+            {data.program}{latest ? ` | Semester: ${latest.semester}` : ''}
+          </p>
         </div>
         <button
           type="button"
@@ -76,17 +120,23 @@ export default function StudentDetailPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-500">Current GPA</p>
-          <p className="mt-3 text-4xl font-semibold text-gray-900">{student.gpa.toFixed(2)}</p>
+          <p className="mt-3 text-4xl font-semibold text-gray-900">{data.currentGpa.toFixed(2)}</p>
         </div>
         <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-500">Risk Level</p>
-          <span className={`mt-3 inline-flex rounded-full px-4 py-2 text-sm font-semibold ${badgeClasses(student.riskLevel)}`}>
-            {student.riskLevel}
-          </span>
+          {latest ? (
+            <span className={`mt-3 inline-flex rounded-full px-4 py-2 text-sm font-semibold ${badgeClasses(latest.riskLevel)}`}>
+              {latest.riskLevel}
+            </span>
+          ) : (
+            <p className="mt-3 text-4xl font-semibold text-gray-900">N/A</p>
+          )}
         </div>
         <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-500">Risk Score</p>
-          <p className="mt-3 text-4xl font-semibold text-gray-900">{student.riskScore?.toFixed(1) ?? 'N/A'}</p>
+          <p className="mt-3 text-4xl font-semibold text-gray-900">
+            {latest?.riskScore?.toFixed(2) ?? 'N/A'}
+          </p>
         </div>
       </div>
 
@@ -94,7 +144,7 @@ export default function StudentDetailPage() {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">GPA History</h2>
-            <p className="text-sm text-gray-500">Trend for the last six semesters.</p>
+            <p className="text-sm text-gray-500">Trend across semesters.</p>
           </div>
           <div className="rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700">Student details</div>
         </div>
@@ -134,6 +184,13 @@ export default function StudentDetailPage() {
                     </td>
                   </tr>
                 ))}
+                {history.length === 0 && (
+                  <tr>
+                    <td colSpan="3" className="px-4 py-6 text-center text-sm text-slate-500">
+                      Nuk ka të dhëna historike.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

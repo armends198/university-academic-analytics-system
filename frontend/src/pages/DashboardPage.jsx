@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   LineChart,
@@ -8,11 +9,13 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts'
+import api from '../services/api'
 
-const kpis = [
+const kpiMeta = [
   {
+    key: 'averageGpa',
     title: 'Average GPA',
-    value: '3.14',
+    format: (v) => v.toFixed(2),
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -24,8 +27,9 @@ const kpis = [
     accent: 'bg-blue-50 text-blue-700',
   },
   {
+    key: 'passRate',
     title: 'Pass Rate',
-    value: '91.2%',
+    format: (v) => `${v}%`,
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -37,8 +41,9 @@ const kpis = [
     accent: 'bg-emerald-50 text-emerald-700',
   },
   {
+    key: 'atRiskCount',
     title: 'At-Risk Count',
-    value: '347',
+    format: (v) => String(v),
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -48,8 +53,9 @@ const kpis = [
     accent: 'bg-amber-50 text-amber-700',
   },
   {
+    key: 'dropoutRate',
     title: 'Dropout Rate',
-    value: '3.8%',
+    format: (v) => `${v}%`,
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -74,11 +80,28 @@ const gpaTrend = [
 export default function DashboardPage() {
   const navigate = useNavigate()
   const role = localStorage.getItem('role') ?? 'Administrator'
+  const [kpiData, setKpiData] = useState(null)
+  const [kpiLoading, setKpiLoading] = useState(true)
+  const [kpiError, setKpiError] = useState(false)
+
+  useEffect(() => {
+    api
+      .get('/analytics/dashboard')
+      .then((res) => setKpiData(res.data))
+      .catch(() => setKpiError(true))
+      .finally(() => setKpiLoading(false))
+  }, [])
 
   function handleLogout() {
     localStorage.removeItem('role')
     localStorage.removeItem('user')
     navigate('/login')
+  }
+
+  function renderKpiValue(kpi) {
+    if (kpiLoading) return <p className="mt-2 text-xl font-semibold text-slate-400">—</p>
+    if (kpiError) return <p className="mt-2 text-sm text-red-500">Gabim</p>
+    return <p className="mt-2 text-3xl font-semibold text-gray-900">{kpi.format(kpiData[kpi.key])}</p>
   }
 
   return (
@@ -99,13 +122,13 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {kpis.map((kpi) => (
-          <div key={kpi.title} className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
+        {kpiMeta.map((kpi) => (
+          <div key={kpi.key} className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
             <div className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl ${kpi.accent}`}>
               {kpi.icon}
             </div>
             <p className="mt-5 text-sm font-medium text-gray-500">{kpi.title}</p>
-            <p className="mt-2 text-3xl font-semibold text-gray-900">{kpi.value}</p>
+            {renderKpiValue(kpi)}
           </div>
         ))}
       </div>
